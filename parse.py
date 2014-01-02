@@ -1,13 +1,25 @@
-def parsefile(filename):
-    res = []
-    for line in open(filename):
-        res.append(stripstring(line.split(":")[1].strip()))
+import time
+
+def parsefile(infile, outfile):
+    res = ""
+    outfile = open(outfile, 'r+')
+    counter = 0
+    for line in open(infile):
+        counter += 1
+        if counter % 10000 == 0:
+            print(counter)
+            print time.clock()
+        res = stripstring(line.split(":")[1].strip()[1:-1])
+        #res += "/n"
+        outfile.write(res + '\n')
+        #res.append(stripstring(line.split(":")[1].strip()))
     print res
+    return 1
 
 def stripstring(str):
     #returns a string which is equivalent to the input string with redundant
     #parens removed
-    printtree(parsestring(str))
+    return printtree(parsestring(str))
 
 def parsestring(input):
     #parses a input string into a tree structure representing the input expression
@@ -30,7 +42,6 @@ def parselist(tokens):
 
     #the rules for division and subtraction are a little more complicated, but
     #but not too bad
-
     res =[]
     i = 0
     while i < len(tokens):
@@ -51,7 +62,7 @@ def parselist(tokens):
                 if parencount == 0:
                     #we've found the relevant closing paren, copy this slice into the
                     #result list and update the index
-                    sublist = tokens[(i + 1):(endidx + 2)]
+                    sublist = tokens[(i + 1):(endidx + i)]
                     res.append(parselist(sublist))
                     #print(sublist)
                     i += endidx + 1
@@ -117,12 +128,6 @@ def flattenlist(exp):
                 neighbors.append(exp[idx - 1])
             if idx != len(exp) - 1:
                 neighbors.append(exp[idx + 1])
-##            print("flatten test")
-##            print(sublist)
-##            print(neighbors)
-##            print(precedence(sublist))
-##            print(precedence(neighbors))
-##            print(max(max(precedence(sublist)), max(precedence(neighbors))))
             if min(precedence(sublist)) >= max(precedence(neighbors)):
                 #sub-expression can be flattened
                 if max(max(precedence(sublist)), max(precedence(neighbors))) == 3:
@@ -179,5 +184,7 @@ def printtree(tree):
     return res
 
 print(printtree(flattenlist(parsestring("1 + ( 2 + ( 3 + 4 ) ) * 5"))))
+#should print:
+#(1 + (2 + (3 + 4)) * 5)
 
-parsefile("C:\\temp\\inder.txt")
+parsefile("C:\\temp\\inder.txt", "C:\\temp\\jeek.txt")
