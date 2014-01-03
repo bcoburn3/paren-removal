@@ -19,7 +19,7 @@ def parsefile(infile, outfile):
 def stripstring(str):
     #returns a string which is equivalent to the input string with redundant
     #parens removed
-    return printtree(parsestring(str))
+    return printtree(flattenlist(parsestring(str)))
 
 def parsestring(input):
     #parses a input string into a tree structure representing the input expression
